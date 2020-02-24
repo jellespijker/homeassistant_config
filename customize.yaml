@@ -1,0 +1,22 @@
+device_tracker.huawei_p20_lite_84c27d79e_home:
+  friendly_name: HUAWEI P20 lite.home
+device_tracker.android_be47c1568eb07b6a_home:
+  friendly_name: HTC-U.home
+sensor.study_climate_temperature:
+  friendly_name: study temperature
+  unit_of_measurement: °C
+sensor.jay_temperature:
+  friendly_name: jay temperature
+  unit_of_measurement: °C
+sensor.bedroom_temperature:
+  friendly_name: bedroom temperature
+  unit_of_measurement: °C
+sensor.bedroom_humidity:
+  friendly_name: bedroom humidity
+  unit_of_measurement: '%'
+sensor.jay_humidity:
+  friendly_name: jay humidity
+  unit_of_measurement: '%'
+sensor.study_climate_humidity:
+  friendly_name: study humidity
+  unit_of_measurement: '%'

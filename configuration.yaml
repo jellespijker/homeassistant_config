@@ -1,0 +1,206 @@
+homeassistant:
+  customize: !include customize.yaml
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+http:
+  base_url: !secret base_url
+  ssl_certificate: /etc/letsencrypt/live/peer23peer.asuscomm.com/fullchain.pem
+  ssl_key: /etc/letsencrypt/live/peer23peer.asuscomm.com/privkey.pem
+
+mobile_app: 
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+google_assistant:
+  project_id: !secret google_cloud_id
+  api_key: !secret google_cloud_key
+  service_account: !include smarthome.json
+  report_state: true
+  exposed_domains:
+    - switch
+    - light
+    - sensor
+  entity_config:
+    sensor.jay_temperature:
+      name: "Jay temperature"
+      expose: true
+    sensor.entryway:
+      name: door
+      expose: true
+    light.entryway:
+      name: frontdoor
+      expose: true
+    light.entryway:
+      name: firstfloor
+      expose: true
+
+tuya:
+  username: !secret tuya_username
+  password: !secret tuya_password
+  country_code: !secret tuya_country_code
+  platform: smart_life
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+device_tracker:
+  - platform: nmap_tracker
+    hosts:
+      - !secret jelle_phone_ip
+    home_interval: 5
+    consider_home: 300
+  - platform: asuswrt
+    host: !secret router_ip
+    username: !secret asuswrt_username
+    password: !secret asuswrt_password
+    interval_second: 10
+    consider_home: 300
+    new_device_defaults:
+      track_new_devices: true
+      hide_if_away: false 
+ 
+media_player:
+  - platform: ziggo-mediabox-next
+    username: !secret ziggo_username
+    password: !secret ziggo_password
+  - platform: kodi
+    name: livingroom_HTPC
+    host: !secret livingroom_HTPC_ip
+
+asuswrt:
+  host: !secret router_ip
+  username: !secret asuswrt_username
+  password: !secret asuswrt_password
+  sensors:
+    - upload
+    - download
+    - upload_speed
+    - download_speed
+
+sensor:
+  - platform: nederlandse_spoorwegen
+    email: !secret ns_username
+    password: !secret ns_password
+    routes:
+      - name: Tiel-Utrecht
+        from: Tl
+        to: Ut
+      - name: Tiel-Geldermalsen
+        from: Tl
+        to: Gdm
+      - name: Utrecht-Tiel
+        from: Ut
+        to: Tl
+      - name: Geldermalsen-Tiel
+        from: Gdm
+        to: Tl
+  - platform: dht
+    name: study_climate
+    scan_interval: 30
+    sensor: AM2302
+    pin: 4
+    monitored_conditions:
+      - temperature
+      - humidity 
+  - platform: mqtt
+    state_topic: "bedroom/temperature"
+    name: bedroom_temperature
+    unit_of_measurement: '°C'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "bedroom/humidity"
+    name: bedroom_humidity
+    unit_of_measurement: '%'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "jay/temperature"
+    name: jay_temperature
+    unit_of_measurement: '°C'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "jay/humidity"
+    name: jay_humidity
+    unit_of_measurement: '%'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "basement/temperature"
+    name: basement_temperature
+    unit_of_measurement: '°C'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "basement/humidity"
+    name: basement_humidity
+    unit_of_measurement: '%'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "livingroom/temperature"
+    name: livingroom_temperature
+    unit_of_measurement: '°C'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "livingroom/humidity"
+    name: livingroom_humidity
+    unit_of_measurement: '%'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "kitchen/temperature"
+    name: kitchen_temperature
+    unit_of_measurement: '°C'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "kitchen/humidity"
+    name: kitchen_humidity
+    unit_of_measurement: '%'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "shed/temperature"
+    name: shed_temperature
+    unit_of_measurement: '°C'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "shed/humidity"
+    name: shed_humidity
+    unit_of_measurement: '%'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "hallway/temperature"
+    name: hallway_temperature
+    unit_of_measurement: '°C'
+    value_template: "{{(value | float)}}"
+  - platform: mqtt
+    state_topic: "hallway/humidity"
+    name: hallway_humidity
+    unit_of_measurement: '%'
+    value_template: "{{(value | float)}}"
+  - platform: buienradar
+    name: 'tiel'
+    monitored_conditions:
+      - humidity
+      - temperature
+      - groundtemperature
+      - windspeed
+      - windazimuth
+      - pressure
+      - precipitation
+      - irradiance
+
+
+mqtt:
+  broker: !secret mqtt_broker_ip
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery: true
+
+
+recorder:
+  purge_keep_days: 30
+  exclude:
+    domains:
+      - weblink
+      - updater

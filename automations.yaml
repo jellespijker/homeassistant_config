@@ -1,0 +1,10 @@
+- alias: jay_away
+  trigger:
+    platform: state
+    entity_id: person.jay
+    to: 'away'
+  action:
+    service: notify.mobile_app_jelle_s_ane_lx1
+    data:    
+      message: 'Jeeh'
+    
